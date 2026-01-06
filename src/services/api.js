@@ -40,8 +40,19 @@ api.interceptors.request.use((config) => {
 
     config.headers = config.headers ?? {};
 
+    // ✅ 1) Mantém JWT no header Authorization
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    // ✅ 2) NGROK: evita receber HTML do aviso (ERR_NGROK_6024) no browser
+    // Aplica SOMENTE quando a API estiver exposta via ngrok.
+    const isNgrok =
+        typeof baseURL === "string" &&
+        (baseURL.includes("ngrok-free.dev") || baseURL.includes("ngrok.io"));
+
+    if (isNgrok) {
+        config.headers["ngrok-skip-browser-warning"] = "true";
     }
 
     return config;
