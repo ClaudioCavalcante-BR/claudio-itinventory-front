@@ -1,0 +1,268 @@
+:root {
+    --glass: rgba(255, 255, 255, 0.08);
+    --border: rgba(255, 255, 255, 0.18);
+    --text: #f5f7fb;
+    --muted: #c7cfdb;
+    --accent: #7dd3fc;
+}
+
+/* Tela cheia com a imagem de fundo do prédio */
+.wrap {
+    position: fixed;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    /*display: grid; */
+    /*place-items: center;*/
+    z-index: 9999;
+}
+
+/* Camada escura + leve blur para destacar o card */
+.overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+            180deg,
+            rgba(0, 0, 0, 0.25) 0%,
+            rgba(0, 0, 0, 0.35) 100%
+    );
+    backdrop-filter: none;
+    /*backdrop-filter: blur(4px);*/
+}
+
+/* Card principal (painel de boas-vindas) */
+.card {
+    position: relative;
+    width: min(92vw, 820px);
+    border-radius: 22px;
+    padding: clamp(22px, 3vw, 36px);
+
+    /* antes: background: var(--glass); */
+    /* agora: card mais sólido e um pouco mais claro */
+    background: radial-gradient(
+            circle at top,
+            rgba(255, 255, 255, 0.20),
+            rgba(15, 23, 42, 0.85)
+    );
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border);
+    box-shadow: 0 12px 40px rgba(21, 21, 21, 0.35);
+    color: var(--text);
+    text-align: center;
+    animation: fadeUp 0.6s ease-out both;
+}
+
+/* Linha do topo: título à esquerda, relógio à direita */
+.headerRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 10px;
+}
+
+/* Agrupa título + subtítulo */
+.headerTitle {
+    text-align: left;
+}
+
+/* Caixa do relógio */
+.infoBox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(30, 33, 27, 0.75); /* “pílula” mais escura */
+    border: 1px solid rgba(148, 163, 184, 0.5);
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.45);
+}
+
+/* Bandeira do Brasil */
+.flag {
+    font-size: 20px;
+}
+
+/* Textos do relógio */
+.clockText {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.clockLabel {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.1;
+}
+
+.clockValue {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+/* Relógio separado do card, logo abaixo e centralizado */
+.clockStandalone {
+    margin-top: 14px;
+    width: min(30vw, 350px);  /* mesmo width do .card */
+
+    /*justify-content: flex-end; /* relógio encostado à borda direita do “card virtual” */
+
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap; /* se a tela for pequena, quebra pra baixo */
+}
+
+
+/* Ajuste para telas menores */
+@media (max-width: 700px) {
+    .headerRow {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .headerTitle {
+        text-align: left;
+        width: 100%;
+    }
+
+    .clockBox {
+        align-self: stretch;
+        justify-content: center;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Título Controller-Inventory */
+.card h1 {
+    margin: 0 0 4px;
+    font-size: clamp(30px, 6vw, 46px);
+    letter-spacing: 0.3px;
+}
+
+/* Subtítulo (Inventário de equipamentos de TI) */
+.subtitle {
+    margin: 0 0 14px;
+    color: var(--muted);
+    font-size: clamp(14px, 2.2vw, 16px);
+}
+
+/* Texto explicativo */
+.text {
+    text-align: justify;
+    text-justify: inter-word;
+    margin: 14px 0 12px;
+    line-height: 1.55;
+    color: var(--text);
+    opacity: 0.98;
+}
+
+.text p {
+    margin: 0 0 10px;
+}
+
+/* Lista de destaques (badges) */
+.badges {
+    margin: 14px 0 22px;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.badges li {
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: rgba(15, 23, 42, 0.7); /* tom mais “tech” */
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Ícone do check */
+.badgeIcon {
+    color: #38bdf8;
+    margin-right: 8px;
+    vertical-align: -2px;
+}
+
+/* Botão de acesso ao sistema */
+.button {
+    appearance: none;
+    border: 0;
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    color: #010611;
+    background: linear-gradient(180deg, #b9e6fe, var(--accent));
+    box-shadow: 0 6px 20px rgba(125, 211, 252, 0.4);
+    transition: transform 0.06s ease, filter 0.2s ease, box-shadow 0.2s ease;
+}
+
+.button:hover {
+    filter: brightness(1.02);
+    box-shadow: 0 10px 28px rgba(125, 211, 252, 0.5);
+}
+
+.button:active {
+    transform: translateY(1px);
+}
+
+/* Observação sobre o localStorage */
+.note {
+    margin-top: 10px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+/* Animação de entrada do card */
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Pequeno ajuste para telas menores */
+@media (max-width: 600px) {
+    .card {
+        width: 94vw;
+        padding: 18px;
+    }
+
+    .badges {
+        justify-content: center;
+    }
+}

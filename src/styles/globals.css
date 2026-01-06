@@ -1,0 +1,704 @@
+html, body {
+    width: 100%;
+    margin: 0;
+}
+
+#root {
+    min-height: 100vh;   /* deixa a página crescer naturalmente */
+    display: flex;
+}
+
+:root{
+    --bg-overlay: rgba(4,9,20,.55);
+    --panel: rgba(17,25,40,.65);
+    --text: #e5e7eb;
+    --muted:#9ca3af;
+    --border: rgba(255,255,255,.08);
+    --accent:#dbe1e9;
+}
+
+/* ===== RESET SIMPLES ===== */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+/* 🔹 AQUI: fundo global usando bg-ativos.jpg (em public/) */
+body {
+    margin: 0;
+    color: var(--text);
+    font-family: ui-sans-serif, system-ui, -apple-system;
+    background: url("/bg-ativos.jpg") center center / cover no-repeat fixed;
+
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* 🔹 Camada translúcida sobre a imagem (igual AssetTrack) */
+.app__wrap {
+    flex: 1;
+    backdrop-filter: saturate(120%) blur(6px);
+    background: rgba(0, 0, 0, 0.45); /* leve escurecimento */
+    min-height: 100vh;
+    transition: background 0.3s ease;
+}
+
+/* Modo "nítido": remove o blur/overlay do app */
+body.no-blur .app__wrap {
+    backdrop-filter: none !important;
+    background: transparent !important;  /* sem overlay escuro */
+    /*background: rgba(0, 0, 0, 0.2) !important;*/
+}
+
+/* Modo "nítido": remove o blur do conteúdo principal */
+body.no-blur .main-content {
+    backdrop-filter: none;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button,
+input,
+select {
+    font: inherit;
+}
+
+/* ===== LAYOUT GERAL ===== */
+
+.app-shell {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    width: 100%;
+
+    /*background: radial-gradient(circle at top, #1f2937 0, #020617 55%);*/
+    /* Gradiente + imagem de fundo interna (igual conceito do AssetTrack) */
+    /*background-image:
+      radial-gradient(circle at top, rgba(15, 23, 42, 0.9) 0, rgba(2, 6, 23, 0.98) 55%),
+      url("../assets/images/bg-ativos1.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;*/
+}
+
+.sidebar {
+    padding: 24px 20px;
+    border-right: 1px solid rgba(148, 163, 184, 0.25);
+    background: radial-gradient(circle at top left, #111827 0, #020617 70%);
+
+    /* NOVO: estrutura em coluna pra separar topo e base */
+    display: flex;
+    flex-direction: column;
+}
+
+/* topo (logo + menu) já fica como está, não precisa de muita coisa */
+.sidebar-top {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* base: empurra para baixo e centraliza horizontalmente */
+.sidebar-bottom {
+    margin-top: 150px;          /* era 48px aumentei para 150px distância para baixo do menu */
+    width: 100%;
+    /*margin-top: auto;  */           /* joga para a parte de baixo da sidebar */
+    display: flex;
+    /*justify-content: center;      /* centraliza na horizontal */
+
+    flex-direction: column;   /* empilha um embaixo do outro */
+    align-items: center;      /* centraliza */
+    gap: 12px;                /* espaço entre os botões */
+}
+
+.logo {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin: 0 0 1.5rem;
+}
+
+.nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.nav a {
+    padding: 0.55rem 0.8rem;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    color: #e5e7eb;
+    opacity: 0.85;
+}
+
+.nav a.active {
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    color: white;
+    opacity: 1;
+}
+
+/* ===== CONTEÚDO PRINCIPAL ===== */
+.main-content {
+    padding: 24px 32px 40px;
+    width: 100%;
+
+    /* Layout: empilha Header, Outlet, Footer */
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    /* Blur volta a ser direto aqui (simples e estável) */
+    backdrop-filter: blur(10px);
+}
+
+
+/* ===== PAINÉIS / CARDS ===== */
+.panel {
+    background: rgba(15, 23, 42, 0.9);
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    padding: 18px 20px;
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.7);
+    margin-bottom: 18px;
+}
+
+.panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 10px;
+}
+
+/* ===== BOTÕES ===== */
+.btn-primary,
+.btn-secondary {
+    border-radius: 999px;
+    padding: 0.45rem 0.95rem;
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    color: #f9fafb;
+}
+
+.btn-primary:hover {
+    filter: brightness(1.05);
+}
+
+.btn-secondary {
+    background: transparent;
+    border-color: rgba(148, 163, 184, 0.7);
+    color: #e5e7eb;
+}
+
+.btn-secondary:hover {
+    background: rgba(15, 23, 42, 0.9);
+}
+
+/* Botão para alternar imagem nítida / translúcida */
+.toggle-btn {
+    display: block;
+    width: 80%;                /* não ocupa toda a sidebar */
+    max-width: 240px;          /* limite para telas maiores */
+    margin: 0 auto;            /* centraliza dentro do wrapper */
+
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    color: rgb(222, 219, 214);
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.toggle-btn:hover {
+    background: rgba(203, 233, 146, 0.1);
+    transform: scale(1.02);
+}
+
+/* ===== TÍTULOS ===== */
+h1,
+h2,
+h3 {
+    margin-top: 0;
+}
+
+h1 {
+    font-size: 1.6rem;
+}
+
+h2 {
+    font-size: 1.2rem;
+}
+
+/* ===== DASHBOARD (KPIs) ===== */
+.dashboard {
+    width: 100%;
+}
+
+/*.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+}*/
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    align-items: stretch;
+}
+
+.kpi-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 120px;
+}
+
+.kpi-card h2 {
+    margin: 0;
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+.kpi-value {
+    margin: 10px 0 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+/* ===== FORM CADASTRO ATIVO ===== */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 10px;
+    align-items: center;
+}
+
+/* botão principal do form */
+.form-grid .btn-primary {
+    height: 42px;
+    justify-self: end;
+}
+
+/* Responsivo: quebra em 2 colunas */
+@media (max-width: 1100px) {
+    .form-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .form-grid .btn-primary {
+        justify-self: stretch;
+    }
+}
+
+/* ===== BANNER (SUCESSO/ERRO) DO FORM ===== */
+.flash {
+    grid-column: 1 / -1; /* ocupa a largura toda do grid do form */
+    margin-bottom: 8px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,.12);
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(6px);
+}
+
+.flash.success {
+    border-color: rgba(34, 197, 94, 0.45);
+    background: rgba(34, 197, 94, 0.12);
+    color: #bbf7d0;
+}
+
+.flash.error {
+    border-color: rgba(239, 68, 68, 0.45);
+    background: rgba(239, 68, 68, 0.12);
+    color: #fecaca;
+}
+
+/* ================================
+   TABELA ATIVOS - AJUSTE DO SCROLL
+   ================================ */
+
+/* Mantém o comportamento original do wrapper (horizontal se precisar) */
+.table-wrapper{
+    overflow-x: auto;
+}
+
+/* Viewport com scroll vertical e janela de ~10 linhas */
+.table-scroll{
+    /* Ajuste fino aqui para bater 10 itens visíveis */
+    --row-h: 36px;   /* altura real aproximada da linha */
+    --head-h: 44px;  /* altura real aproximada do cabeçalho */
+
+    max-height: min(calc(10 * var(--row-h) + var(--head-h)), 55vh);
+    overflow-y: auto;
+    overflow-x: auto;
+
+    display: block;
+    border-radius: 16px;
+}
+
+.table-assets {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.table-assets thead {
+    background: rgba(15, 23, 42, 0.95);
+}
+
+/* Cabeçalho fixo (sticky) SOMENTE dentro do container com scroll */
+.table-scroll .table-assets thead th{
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: rgba(15, 23, 42, 0.95);
+}
+
+/* Altura consistente das linhas (para “bater” 10 visíveis) */
+.table-scroll .table-assets tbody tr{
+    height: var(--row-h);
+}
+
+.table-assets th,
+.table-assets td {
+    padding: 0.5rem 0.55rem;
+    border-bottom: 1px solid rgba(30, 64, 175, 0.45);
+}
+
+.table-assets tbody tr:hover {
+    background: rgba(30, 64, 175, 0.32);
+}
+
+/* Inputs na tabela */
+.table-assets input,
+.table-assets select {
+    width: 100%;
+    padding: 0.25rem 0.35rem;
+    border-radius: 999px;
+    border: 1px solid rgba(148, 163, 184, 0.6);
+    background: rgba(15, 23, 42, 0.95);
+    color: #e5e7eb;
+}
+
+.table-assets td{
+    vertical-align: middle;
+}
+
+
+/* Status */
+.status {
+    display: inline-flex;
+    padding: 0.15rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.status.em_uso,
+.status.active {
+    background: rgba(22, 163, 74, 0.2);
+    color: #4ade80;
+}
+
+/* EM_MANUTENCAO */
+.status.em_manutencao,
+.status.maintenance {
+    background: rgba(234, 179, 8, 0.16);
+    color: #facc15;
+}
+
+/* EM_DESCARTADO */
+.status.descartado,
+.status.disposed {
+    background: rgba(239, 68, 68, 0.18);
+    color: #fecaca;
+}
+
+/* EM_ESTOQUE → azul, por exemplo */
+.status.em_estoque {
+    background: rgba(59, 130, 246, 0.18);
+    color: #bfdbfe;
+}
+
+/* EM_RESERVADO*/
+.status.reservado {
+    background: rgba(59, 130, 246, 0.18);
+    color: #bfdbfe;
+}
+
+/* EM_GARANTIA*/
+.status.em_garantia {
+    background: rgba(59, 130, 246, 0.18);
+    color: #bfdbfe;
+}
+
+/* ARUARDANDO_DESCARTE*/
+.status.aguardando_descarte {
+    background: rgba(59, 130, 246, 0.18);
+    color: #bfdbfe;
+}
+
+/* PERDIDO_OU_ROUBADO*/
+.status.perdido_ou_roubado {
+    background: rgba(59, 130, 246, 0.18);
+    color: #bfdbfe;
+}
+
+/* Ações na tabela */
+.table-assets .actions {
+    white-space: nowrap;
+    display: flex;
+    gap: 0.3rem;
+}
+
+.table-assets .actions button {
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    border: 1px solid rgba(148, 163, 184, 0.7);
+    background: rgba(15, 23, 42, 0.95);
+    color: #e5e7eb;
+    cursor: pointer;
+    font-size: 0.75rem;
+}
+
+.table-assets .actions button.danger {
+    border-color: rgba(248, 113, 113, 0.8);
+    color: #fecaca;
+}
+
+
+.table-footer{
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+    gap:10px;
+    margin-top:10px;
+    padding-top:6px;
+}
+
+.table-footer-info{
+    opacity:.9;
+    font-size:.85rem;
+    min-width:110px;
+    text-align:right;
+}
+
+.pager-btn{
+    width:34px;
+    height:28px;
+    border-radius:999px;
+    border:1px solid rgba(148,163,184,.7);
+    background: rgba(15, 23, 42, 0.95);
+    color:#e5e7eb;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    line-height:1;
+}
+
+.pager-btn:disabled{
+    opacity:.45;
+    cursor:not-allowed;
+}
+
+
+/* ===== Layout: Sidebar + Main (Header/Outlet/Footer) ===== */
+/* (Ajuste no FINAL do arquivo para suportar Header + Outlet + Footer dentro do main) */
+
+/* Footer não “gruda” no conteúdo */
+.footer {
+    width: 100%;
+    margin-top: 12px; /* em vez de auto */
+    /*margin-top: auto;*/
+    padding: 12px 16px;
+
+    border-top: 1px solid rgba(255,255,255,.12);
+    opacity: 0.98;
+
+    /* NOVO: fundo para o footer ficar visível sobre a imagem */
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(6px);
+    border-radius: 14px;
+
+    /* Camada acima do conteúdo (continua rolando junto) */
+    position: relative;
+    z-index: 5;
+}
+
+.footer a {
+    color: #e5e7eb;
+    text-decoration: none;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+
+/* Header com leve separação */
+.header-inner {
+    padding: 12px 16px;
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 14px;
+    background: rgba(255,255,255,.06);
+}
+
+.main-inner {
+    width: 100%;
+    max-width: 1400px;  /* ajuste: 1280 / 1400 / 1600 */
+    margin: 0 auto;
+
+    display: flex;
+    flex-direction: column;
+    flex: 1;            /* faz o bloco principal crescer */
+}
+
+.main-body {
+    flex: 1;
+    min-height: 0;
+}
+
+
+/* ===== USERS: DataGrid (MUI) tema escuro no DataGrid (sem ThemeProvider) ===== */
+.users-datagrid {
+    border: 1px solid rgba(148, 163, 184, 0.35) !important;
+    border-radius: 14px !important;
+    background: rgba(15, 23, 42, 0.90) !important;
+    color: #e5e7eb !important;
+    overflow: hidden !important;
+}
+
+/* Header: forçar fundo escuro (o seu está branco) */
+.users-datagrid .MuiDataGrid-columnHeaders {
+    background: rgba(15, 23, 42, 0.95) !important;
+    color: #e5e7eb !important;
+    border-bottom: 1px solid rgba(30, 64, 175, 0.45) !important;
+}
+
+/* Importante: às vezes o header interno também precisa */
+.users-datagrid .MuiDataGrid-columnHeadersInner,
+.users-datagrid .MuiDataGrid-columnHeader,
+.users-datagrid .MuiDataGrid-columnHeaderTitleContainer {
+    background: rgba(15, 23, 42, 0.95) !important;
+    color: #e5e7eb !important;
+}
+
+.users-datagrid .MuiDataGrid-columnHeaderTitle {
+    color: #e5e7eb !important;
+    font-weight: 600 !important;
+    opacity: 0.95;
+}
+
+/* Corpo */
+.users-datagrid .MuiDataGrid-virtualScroller {
+    background: rgba(15, 23, 42, 0.90) !important;
+}
+
+.users-datagrid .MuiDataGrid-cell {
+    border-bottom: 1px solid rgba(30, 64, 175, 0.35) !important;
+    color: #e5e7eb !important;
+}
+
+.users-datagrid .MuiDataGrid-row:hover {
+    background: rgba(30, 64, 175, 0.22) !important;
+}
+
+/* Rodapé */
+.users-datagrid .MuiDataGrid-footerContainer {
+    background: rgba(15, 23, 42, 0.95) !important;
+    border-top: 1px solid rgba(30, 64, 175, 0.45) !important;
+    color: #e5e7eb !important;
+}
+
+/* Paginação */
+.users-datagrid .MuiTablePagination-root,
+.users-datagrid .MuiTablePagination-root * {
+    color: #e5e7eb !important;
+}
+
+/* Overlay (loading / no rows) */
+.users-datagrid .MuiDataGrid-overlay {
+    background: rgba(15, 23, 42, 0.92) !important;
+    color: #e5e7eb !important;
+}
+
+/* Ícones do header (sort / menu) */
+.users-datagrid .MuiDataGrid-sortIcon,
+.users-datagrid .MuiDataGrid-menuIconButton,
+.users-datagrid .MuiDataGrid-filterIcon,
+.users-datagrid .MuiSvgIcon-root {
+    color: rgba(229, 231, 235, 0.9) !important;
+}
+
+/* Remove aquele “círculo branco” estranho no header quando tem sort */
+.users-datagrid .MuiDataGrid-iconButtonContainer {
+    background: transparent !important;
+}
+
+/* Scrollbar dentro do DataGrid (Chrome/Safari/Edge) */
+.users-datagrid .MuiDataGrid-virtualScroller::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+.users-datagrid .MuiDataGrid-virtualScroller::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.80);
+    border-radius: 10px;
+}
+
+.users-datagrid .MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.35);
+    border-radius: 10px;
+}
+
+.users-datagrid .MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb:hover {
+    background: rgba(148, 163, 184, 0.55);
+}
+
+/* Linhas e separadores mais consistentes */
+.users-datagrid .MuiDataGrid-columnSeparator {
+    color: rgba(255,255,255,.12) !important;
+}
+
+/* Remover borda azul de foco no cell (fica mais clean) */
+.users-datagrid .MuiDataGrid-cell:focus,
+.users-datagrid .MuiDataGrid-columnHeader:focus {
+    outline: none !important;
+}
+
+/* Reduz camadas internas do DataGrid para não encobrir o footer */
+.users-datagrid .MuiDataGrid-columnHeaders {
+    z-index: 1 !important;
+}
+
+.users-datagrid .MuiDataGrid-menuIcon,
+.users-datagrid .MuiDataGrid-sortIcon {
+    z-index: 1 !important;
+}
+
+
+/* Se houver algum fixed “perdido” no header, força a correção */
+.header-inner {
+    position: relative !important; /* garante que não é fixed */
+    z-index: 1;
+}
+
+/* ===== USERS: impedir header sticky do DataGrid de sobrepor outros elementos ===== */
+.users-datagrid .MuiDataGrid-columnHeaders {
+    position: relative !important; /* remove sticky interno quando conflita */
+    z-index: 1 !important;
+}
