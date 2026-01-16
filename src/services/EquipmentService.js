@@ -13,6 +13,21 @@ export async function fetchEquipments({ page = 0, size = 100 } = {}) {
     return unwrapPage(data);
 }
 
+export async function fetchEquipmentsPage({ page = 0, size = 10 } = {}) {
+    const { data } = await api.get("/api/equipments", { params: { page, size } });
+
+    const items = Array.isArray(data?.content) ? data.content : [];
+    const meta = data?.page ?? {};
+
+    return {
+        items,
+        page: meta.number ?? page,
+        size: meta.size ?? size,
+        totalElements: meta.totalElements ?? items.length,
+        totalPages: meta.totalPages ?? 1,
+    };
+}
+
 export async function createEquipment(payload) {
     const { data } = await api.post("/api/equipments", payload);
     return data;
