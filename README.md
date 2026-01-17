@@ -101,9 +101,109 @@ O claudio-itinventory-front é uma aplicação Web desenvolvida em React + Vite 
    3. Componentização de UI básica para padronizar confirmações e badges.
 
 ## 6. Estrutura de pastas
-
-<img width="370" height="660" alt="image" src="https://github.com/user-attachments/assets/f3e23168-1553-4731-870d-6d17f1295c43" />
-
+```
+claudio-itinventory-front/
+├─ public/                                   --> Arquivos estáticos servidos na raiz (/)
+│  ├─ bg-ativos.jpg                          --> Background (telas internas/ativos)
+│  ├─ bg-ativos1.jpg                         --> Variante de background (telas internas)
+│  ├─ bg-landing.jpg                         --> Background da Landing (tela pública)
+│  └─ vite.svg                               --> Ícone padrão do Vite
+│
+├─ src/                                      --> Código-fonte principal (React)
+│  ├─ assets/                                --> Imagens/arquivos importados por componentes
+│  │  ├─ images/
+│  │  │  └─ bg-landing.jpg                   --> Imagem usada na Landing (import)
+│  │  └─ react.svg                           --> Asset padrão (placeholder/demonstração)
+│  │
+│  ├─ components/                            --> Componentes reutilizáveis (UI + Layout + Landing)
+│  │  ├─ Demo/
+│  │  │  └─ ClassClock.jsx                   --> Componente demonstrativo (relógio)
+│  │  ├─ Landing/
+│  │  │  ├─ Landing.jsx                      --> Tela pública de boas-vindas (hero/CTA)
+│  │  │  └─ Landing.module.css               --> Estilos isolados da Landing
+│  │  ├─ Layout/
+│  │  │  ├─ AppLayout.jsx                    --> Casca do app privado (Sidebar + Header + conteúdo)
+│  │  │  ├─ PublicLayout.jsx                 --> Casca das telas públicas (Landing/Login)
+│  │  │  ├─ Header.jsx                       --> Topo (ações globais / identidade)
+│  │  │  ├─ Sidebar.jsx                      --> Menu lateral (navegação do sistema)
+│  │  │  └─ Footer.jsx                       --> Rodapé
+│  │  └─ UI/
+│  │     ├─ Card.jsx                         --> Wrapper visual (borda/sombra/padding)
+│  │     ├─ ConfirmDialog.jsx                --> Modal de confirmação (ex.: excluir)
+│  │     └─ StatusBadge.jsx                  --> Selo visual para status (ativo/inativo etc.)
+│  │
+│  ├─ constants/                             --> Constantes e mapeamentos (enums/labels)
+│  │  ├─ equipmentEnums.js                   --> Enums/labels de Equipment (type/status etc.)
+│  │  └─ status.js                           --> Mapeamento de status (valor vs texto amigável)
+│  │
+│  ├─ context/                               --> Context API (sessão e domínio)
+│  │  ├─ AuthContext.jsx                     --> Autenticação (login/logout, token, perfil, loading)
+│  │  └─ AssetsContext.jsx                   --> Domínio “equipments” (CRUD, reload, integração UI)
+│  │
+│  ├─ forms/                                 --> Blocos funcionais (Ativos/Equipamentos)
+│  │  ├─ AssetList.jsx                       --> Lista (tabela/filtro/ações/export)
+│  │  ├─ AssetItem.jsx                       --> Item/linha (ações edit/delete)
+│  │  └─ AssetForm.jsx                       --> Formulário criar/editar (validação + submit)
+│  │
+│  ├─ pages/                                 --> Telas por módulo
+│  │  ├─ Auth/
+│  │  │  ├─ LoginPage.jsx                    --> Tela de login (integra com AuthContext)
+│  │  │  ├─ LoginPage.module.css             --> Estilos isolados do login
+│  │  │  └─ RegisterUserPage.jsx             --> Tela alternativa/legada de cadastro (Auth)
+│  │  ├─ Dashboard/
+│  │  │  └─ Dashboard.jsx                    --> Painel principal (visão geral/indicadores)
+│  │  └─ Users/
+│  │     ├─ UserListPage.jsx                 --> Gestão de usuários (ADMIN) com DataGrid/ações
+│  │     ├─ UserEditPage.jsx                 --> Edição de usuário (ADMIN)
+│  │     ├─ RegisterUserPage.jsx             --> Cadastro de usuário (ADMIN)
+│  │     ├─ RegisterUserPage.module.css      --> Estilos isolados do cadastro
+│  │     ├─ userListColumns.jsx              --> Colunas do DataGrid (Users)
+│  │     ├─ userListUi.js                    --> Helpers de UI (diálogos/formatadores)
+│  │     └─ userListUtils.js                 --> Helpers utilitários (regras/normalizações)
+│  │
+│  ├─ routes/                                --> Rotas e proteção por autenticação/perfil
+│  │  ├─ Router.jsx                          --> Tabela de rotas + layouts (público/privado/admin)
+│  │  ├─ PrivateRoute.jsx                    --> Guard: exige usuário autenticado
+│  │  └─ AdminRoute.jsx                      --> Guard: exige perfil ADMIN
+│  │
+│  ├─ services/                              --> Integração HTTP com o backend (Axios)
+│  │  ├─ api.js                              --> Axios base + interceptors (Bearer, 401/403, HTTPS PROD)
+│  │  ├─ AuthService.js                      --> Endpoints de autenticação (/login, /my-profile)
+│  │  ├─ EquipmentService.js                 --> CRUD/export de equipamentos (/api/equipments)
+│  │  ├─ UserService.js                      --> CRUD/export/ativação de usuários (/api/usuarios)
+│  │  └─ __tests__/                          --> Testes unitários dos services
+│  │     ├─ api.headers.test.js              --> Validação de headers/interceptors
+│  │     ├─ api.ngrok-header.test.js         --> Header específico (cenário túnel/dev)
+│  │     ├─ api.security.test.js             --> Regras de segurança (HTTPS em PROD)
+│  │     ├─ EquipmentService.fetch.test.js   --> Testes de listagem/busca
+│  │     ├─ EquipmentService.crud.test.js    --> Testes CRUD
+│  │     └─ EquipmentService.export.test.js  --> Testes exportação CSV
+│  │
+│  ├─ store/
+│  │  └─ index.js                            --> Redux Toolkit (slice de assets: items/filter/reducers)
+│  │
+│  ├─ styles/
+│  │  └─ globals.css                         --> Estilos globais (tokens/tema/layout base)
+│  │
+│  ├─ test/
+│  │  └─ setup.js                            --> Setup do ambiente de testes
+│  │
+│  ├─ App.jsx                                --> Componente raiz do app
+│  ├─ main.jsx                               --> Bootstrap (Router + Contexts + Redux + React Query)
+│  ├─ App.css                                --> Estilos gerais do App
+│  └─ index.css                              --> CSS base carregado no entrypoint
+│
+├─ .env.local                                --> Variáveis do ambiente local (ex.: baseURL)
+├─ .env.test                                 --> Variáveis do ambiente de testes
+├─ .env.example                              --> Modelo de variáveis esperadas (referência)
+├─ .gitignore                                --> Arquivos/pastas ignorados no Git
+├─ eslint.config.js                          --> Regras de lint
+├─ index.html                                --> Template HTML do Vite (mount do React no #root)
+├─ package.json                              --> Dependências + scripts (dev/build/test)
+├─ package-lock.json                         --> Lock das versões das dependências
+├─ vite.config.js                            --> Configuração do Vite (plugins/build/aliases)
+└─ README.md                                 --> Documentação do projeto
+```
 
 Visao objetiva das pastas mais relevantes
 
